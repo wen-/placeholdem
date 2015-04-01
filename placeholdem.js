@@ -21,7 +21,8 @@ function Placeholdem( elems ) {
 	};
 
 	P.hasPlaceholder = function( elem ) {
-		return ( typeof elem.hasAttribute === 'function' && elem.hasAttribute( 'placeholder' ) );
+		elem.hasAttribute = elem.hasAttribute || elem.getAttribute;//IE7 no hasAttribute
+		return ( (typeof elem.hasAttribute === 'function' || typeof elem.hasAttribute === 'object') && elem.hasAttribute( 'placeholder' ) );//IE8 return 'object'
 	};
 
 	P.PlaceholdemElem = function( elem ) {
@@ -96,7 +97,7 @@ function Placeholdem( elems ) {
 
 		PE.restorePlaceholder = function() {
 			if( PE.elem.value.length < PE.placeholder.length ) {
-				PE.elem.value += PE.placeholder[ PE.elem.value.length ];
+				PE.elem.value += (PE.placeholder[ PE.elem.value.length ] || (PE.placeholder&&PE.placeholder.split('')[PE.elem.value.length]));//IE7 Array
 				PE.rAF = window.requestAnimationFrame( PE.restorePlaceholder );
 			} else {
 				PE.animating = 0;
